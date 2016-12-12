@@ -9,8 +9,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link href='https://fonts.googleapis.com/css?family=Neuton:400,700' rel='stylesheet' type='text/css'>
 
-  <link href='../../css/main.css' rel='stylesheet' type='text/css'>
-</head>
+  <link href='../css/main.css' rel='stylesheet' type='text/css'>
 
 <style type="text/css">
   .axis path,
@@ -40,8 +39,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/1.12.0/d3-legend.js"></script>
 <div class="meetup"></div>
 <script>
-var margin = {top: 20, right: 20, bottom: 150, left: 40},
-    width = 325 - margin.left - margin.right,
+var margin = {top: 20, right: 20, bottom: 100, left: 40},
+    width = 600 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 var x0 = d3.scale.ordinal()
     .rangeRoundBands([0, width], .4);
@@ -79,8 +78,9 @@ d3.csv("https://raw.githubusercontent.com/amaliebarras/meetupSpeakerGender/sampl
         .attr("y", 0)
         .attr("x", 10)
         .attr("dy", ".35em")
-        .attr("transform", "rotate(90)")
-        .style("text-anchor", "start");
+        .attr("transform", "rotate(45)")
+        .style("text-anchor", "start")
+        .call(wrap, x1.rangeBand());
   svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
@@ -122,8 +122,31 @@ d3.csv("https://raw.githubusercontent.com/amaliebarras/meetupSpeakerGender/sampl
       .scale(color)
   svg.select(".legendOrdinal")
     .call(legendOrdinal)
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = .7, 
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
 });
 </script>
-<p class="graph-subtitle">Note: Meetup names have been shortened.<br>Exact names are in the <a href="https://github.com/amaliebarras/meetupSpeakerGender" target="_blank">repository.</a><br>Source: DataLensDC, Meetup</p>
+<p class="graph-subtitle">Note: Meetup names have been shortened. Exact names are in the <a href="https://github.com/amaliebarras/meetupSpeakerGender" target="_blank">repository.</a><br>Source: DataLensDC, Meetup</p>
 </body>
 </html>
