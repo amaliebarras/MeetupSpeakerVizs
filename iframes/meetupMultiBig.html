@@ -60,7 +60,7 @@ var svg = d3.select(".meetup").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-d3.csv("https://raw.githubusercontent.com/amaliebarras/meetupSpeakerGender/sample/meetupSingleMulti.csv", function(error, data) {
+d3.csv("https://raw.githubusercontent.com/amaliebarras/meetupSpeakerGender/sample/MultiSpeaker.csv", function(error, data) {
   if (error) throw error;
   var gGroup = d3.keys(data[0]).filter(function(key) { return key !== "g"; });
   data.forEach(function(d) {
